@@ -6,7 +6,6 @@ const {encrypt} = require('../cryptoHelper')
 const createUser = async (req, res) => {
   try {
 
-    console.log("request arrived")
     const { username, password, phoneNumber, email, devices} = req.body
 
     if(!username || !password || !phoneNumber || !email || !devices) 
@@ -21,10 +20,8 @@ const createUser = async (req, res) => {
       email,
       devices
     });
-    console.log("request arrived1")
     await newUser.save();
 
-    console.log("request arrived2")
 
     res.status(201).json({ message: 'User created successfully', userId: newUser._id });
 
