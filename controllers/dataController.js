@@ -5,20 +5,20 @@ const {decrypt} = require('../cryptoHelper')
 
 const logData = async (req, res) => {
   try {
-    const { secretKey, temperature, humidity} = req.body;
+    const { secretKey, temperature, humidity} = req.body
     
-    if(!secretKey || !temperature || !humidity)
-      return res.status(500).json({message: "Fill all fields!"})
+    if (typeof secretKey === "undefined" || typeof temperature === "undefined" || typeof humidity === "undefined")
+      return res.status(400).json({ message: "Fill all fields!" })
     
-    decryptedSecretKey = decrypt(secretKey);
+    decryptedSecretKey = decrypt(secretKey)
 
-    const parts = decryptedSecretKey.split("|"); 
+    const parts = decryptedSecretKey.split("|");
 
     if(parts.length !== 2) 
-      return res.status(400).json({ message: "Invalid secret key format!" });
+      return res.status(400).json({ message: "Invalid secret key format!" })
     
-    const deviceId = parts[0]; 
-    const deviceSerialNumber = parts[1]; 
+    const deviceId = parts[0]
+    const deviceSerialNumber = parts[1]
 
     const device = await Device.findOne({serialNumber : deviceSerialNumber, _id : deviceId}) 
 
@@ -35,10 +35,10 @@ const logData = async (req, res) => {
 
     await newData.save()
 
-    res.status(201).json({ message: 'Data created successfully', newData });
+    res.status(201).json({ message: 'Data created successfully', newData })
   } catch (error) {
-    console.error('Error creating Data:', error.message);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error creating Data:', error.message)
+    res.status(500).json({ message: 'Server error' })
   }
 };
 

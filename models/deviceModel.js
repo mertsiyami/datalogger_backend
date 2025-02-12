@@ -10,6 +10,9 @@ const deviceSchema = new mongoose.Schema({
   datalogs: {
     type: [String],
     default: [],
+  },
+  deviceId: {
+    type: String
   }
   
 });

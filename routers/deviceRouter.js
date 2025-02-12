@@ -3,8 +3,8 @@ const { createDevice, createDeviceSecretkey } = require('../controllers/deviceCo
 
 const router = express.Router()
 
-router.post('/create', createDevice)
-router.post('/createDeviceSecretKey', createDeviceSecretkey)
+router.post('/', createDevice)
+router.post('/createDeviceSecretKey', createDeviceSecretkey)  // this endpoint will be removed, .exe file will access database directly
 
 
 module.exports = router;

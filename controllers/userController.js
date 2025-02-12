@@ -34,34 +34,37 @@ const createUser = async (req, res) => {
 
 const addDeviceToUser = async (req, res) => {
   try {
-    const { userId, deviceSerialNumber } = req.body;
+    const { userId, deviceSerialNumber } = req.body
 
     if (!userId || !deviceSerialNumber) {
-      return res.status(400).json({ message: "Fill all fields!" });
+      return res.status(400).json({ message: "Fill all fields!" })
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId)
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "User not found!" })
     }
 
-    const device = await Device.findOne({ serialNumber: deviceSerialNumber });
+    const device = await Device.findOne({ serialNumber: deviceSerialNumber })
     if (!device) {
-      return res.status(404).json({ message: "Device not found!" });
+      return res.status(404).json({ message: "Device not found!" })
     }
 
     if (user.devices.includes(device._id)) {
-      return res.status(400).json({ message: "Device already assigned to this user!" });
+      return res.status(400).json({ message: "Device already assigned to this user!" })
     }
 
-    user.devices.push(device._id);
-    await user.save();
+    user.devices.push(device._id)
+    await user.save()
 
-    res.status(200).json({ message: "Device added successfully", user });
+    device.userId = userId
+    await device.save()
+
+    res.status(200).json({ message: "Device added successfully", user, device })
 
   } catch (error) {
-    console.error("Error adding device to user:", error.message);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error adding device to user:", error.message)
+    res.status(500).json({ message: "Server error" })
   }
 };
 
