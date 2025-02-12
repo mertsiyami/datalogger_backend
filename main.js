@@ -10,24 +10,26 @@ const deviceRoutes = require('./routers/deviceRouter')
 const dataRoutes   = require('./routers/dataRouter')
 
 // .env
-dotenv.config(); 
+dotenv.config()
 
 // Database
-connectDB();
+connectDB()
 
 // Express
-const app = express();
+const app = express()
 
 // Middlewares
-app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.json())
+app.use(cors())
 
 // Routes
-app.use('/user'  , userRoutes);
-app.use('/device', deviceRoutes);
-app.use('/data'  , dataRoutes);
+app.use('/user'  , userRoutes)
+app.use('/device', deviceRoutes)
+app.use('/data'  , dataRoutes)
 
 
-app.listen(3000, () => {
-  console.log(`Server is running on http://localhost: 3000`);
+const PORT = process.env.PORT
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
