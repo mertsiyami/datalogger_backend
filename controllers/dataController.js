@@ -5,21 +5,29 @@ const {decrypt} = require('../cryptoHelper')
 
 const logData = async (req, res) => {
   try {
-    const { deviceSerialNumber, temperature, humidity} = req.body;
+    const { secretKey, temperature, humidity} = req.body;
     
-    if(!deviceSerialNumber || !temperature || !humidity)
+    if(!secretKey || !temperature || !humidity)
       return res.status(500).json({message: "Fill all fields!"})
     
-    //decryptedSerialNumber = decrypt(deviceSerialNumber);                   // after creating serialnumber string for device, now serialnumber is not encrypted
+    decryptedSecretKey = decrypt(secretKey);
 
-    const device = await Device.findOne({serialNumber : deviceSerialNumber}) // serialNumber : decryptedSerialNumber
+    const parts = decryptedSecretKey.split("|"); 
+
+    if(parts.length !== 2) 
+      return res.status(400).json({ message: "Invalid secret key format!" });
+    
+    const deviceId = parts[0]; 
+    const deviceSerialNumber = parts[1]; 
+
+    const device = await Device.findOne({serialNumber : deviceSerialNumber, _id : deviceId}) 
 
     if(!device)
       return res.status(404).json({message : "Device not found!"})
 
     const newData = new Data({
       deviceId : device._id,
-      deviceSerialNumber,                                                     // after creating serialnumber string for device use decryptedSerialNumber  
+      deviceSerialNumber,
       temperature,
       humidity,
       date : new Date()

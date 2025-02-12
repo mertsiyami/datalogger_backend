@@ -1,5 +1,6 @@
 const Device         = require('../models/deviceModel')
 const { v4: uuidv4 } = require('uuid');
+const { encrypt }    = require('../cryptoHelper')
 
 const createDevice = async (req, res) => {
   try {
@@ -33,7 +34,9 @@ const createDeviceSecretkey = async (req, res) => {
     if(!device)
       return res.status(404).json({message : "Device not found!"})
 
-    const secretKey = `${deviceSerialNumber}@${device._id}` // This secretKey creation method will change after code review :)
+    let secretKey = `${device._id}|${deviceSerialNumber}`
+    
+    secretKey = encrypt(secretKey)
 
     res.status(201).json({ message: 'Device secret key created successfully', secretKey });
 
