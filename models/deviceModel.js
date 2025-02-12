@@ -7,10 +7,6 @@ const deviceSchema = new mongoose.Schema({
     trim: true,
     unique: true
   },
-  datalogs: {
-    type: [String],
-    default: [],
-  },
   deviceId: {
     type: String
   }

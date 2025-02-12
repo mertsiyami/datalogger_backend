@@ -25,12 +25,15 @@ const logData = async (req, res) => {
     if(!device)
       return res.status(404).json({message : "Device not found!"})
 
+    const now = new Date()
+    now.setUTCHours(now.getUTCHours() + 3)   // GMT+0 to GMT+3
+
     const newData = new Data({
       deviceId : device._id,
       deviceSerialNumber,
       temperature,
       humidity,
-      date : new Date()
+      date : now
     })
 
     await newData.save()
