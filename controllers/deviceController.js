@@ -18,10 +18,33 @@ const createDevice = async (req, res) => {
 
   } catch (error) {
     
-    console.error('Error creating user:', error.message);
+    console.error('Error creating device:', error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+const createDeviceSecretkey = async (req, res) => {
+  try {
+
+    const { deviceSerialNumber } = req.body
+
+    const device = await Device.findOne({ serialNumber : deviceSerialNumber})
+
+    if(!device)
+      return res.status(404).json({message : "Device not found!"})
+
+    const secretKey = `${deviceSerialNumber}@${device._id}` // This secretKey creation method will change after code review :)
+
+    res.status(201).json({ message: 'Device secret key created successfully', secretKey });
+
+  } catch (error) {
+    
+    console.error('Error creating device secret key:', error.message);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
 
-module.exports = { createDevice };
+
+
+module.exports = { createDevice, createDeviceSecretkey };
