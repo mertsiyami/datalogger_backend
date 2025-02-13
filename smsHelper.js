@@ -8,7 +8,7 @@ const fixieAuth = fixieUrl.auth.split(':');
 
 const sendWarningSMS = (temperature, humidity, phoneNumber) => {
 
-    const message = `Measured values out of range! \nTemperature: ${temperature} Degree Celcius, Humidity: %${humidity} `
+    const message = `Measured values out of range! \nTemperature: ${temperature} Degree Celcius, \nHumidity: %${humidity} `
 
     axios.post(process.env.NETGSM_URL,
       {
