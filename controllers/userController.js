@@ -104,4 +104,36 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, addDeviceToUser, loginUser }
+const updateThresholds = async (req, res) => {
+  try {
+    const { minTemperature, maxTemperature, minHumidity, maxHumidity } = req.body
+
+    const updateFields = {}
+    
+    if (minTemperature !== undefined) updateFields.minTemperature = minTemperature
+    if (maxTemperature !== undefined) updateFields.maxTemperature = maxTemperature
+    if (minHumidity    !== undefined) updateFields.minHumidity    = minHumidity
+    if (maxHumidity    !== undefined) updateFields.maxHumidity    = maxHumidity
+
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({ message: "No valid fields provided for update." })
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, updateFields, { new: true })
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found." })
+    }
+
+    res.status(200).json({
+      message: "Thresholds updated successfully",
+      updatedUser
+    })
+
+  } catch (error) {
+    console.error("Error updating thresholds:", error.message)
+    res.status(500).json({ message: "Server error" })
+  }
+};
+
+module.exports = { createUser, addDeviceToUser, loginUser, updateThresholds }
