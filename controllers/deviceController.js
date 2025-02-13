@@ -1,10 +1,10 @@
-const Device         = require('../models/deviceModel')
+const {Device}         = require('../models');
+const { encrypt }    = require('../helpers');
 const { v4: uuidv4 } = require('uuid');
-const { encrypt }    = require('../cryptoHelper')
+
 
 const createDevice = async (req, res) => {
   try {
-
     const serialNumber = uuidv4()
     const datalogs = []
     
@@ -24,6 +24,8 @@ const createDevice = async (req, res) => {
   }
 };
 
+
+// TO-DO bu endpointi bir helper gibi değerlendirip createDevice altında kullanıcıya sercretKey dönsek daha iyi olur.
 const createDeviceSecretkey = async (req, res) => {
   try {
 
@@ -38,7 +40,8 @@ const createDeviceSecretkey = async (req, res) => {
     
     secretKey = encrypt(secretKey)
 
-    res.status(201).json({ message: 'Device secret key created successfully', secretKey });
+    //the code 200 is more appropriate since we are not creating a new resource in the database 
+    res.status(200).json({ message: 'Device secret key created successfully', secretKey });
 
   } catch (error) {
     
