@@ -41,7 +41,7 @@ const createUser = async (req, res) => {
 const addDeviceToUser = async (req, res) => {
   try {
     const userId = req.user._id
-    const deviceSerialNumber = req.body
+    const deviceSerialNumber = req.body.deviceSerialNumber
 
     if (!userId || !deviceSerialNumber) {
       return res.status(400).json({ message: "Fill all fields!" })
