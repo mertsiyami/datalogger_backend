@@ -46,7 +46,7 @@ const logData = async (req, res) => {
     const {maxTemperature, minTemperature, maxHumidity, minHumidity, phoneNumber} = user;
 
     if(maxTemperature <= temperature || minTemperature > temperature || maxHumidity <= humidity || minHumidity > humidity)
-      console.log(`Temperature or Humidity is out of range! Temperature:${temperature}, Humidity: ${humidity}`); 
+      console.log(`Temperature or Humidity is out of range! Temperature:${temperature}, Humidity: ${humidity}`);  // this line could be remove
       sendWarningSMS(temperature, humidity, phoneNumber)
 
     res.status(201).json({ message: 'Data created successfully', newData })
