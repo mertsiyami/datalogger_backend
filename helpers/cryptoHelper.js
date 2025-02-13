@@ -4,7 +4,6 @@ require('dotenv').config();
 const encryptionKey = process.env.ENCRYPTION_KEY;   // 32 karakter uzunluğunda olmalı
 const iv            = process.env.IV;               // 16 karakter uzunluğunda olmalı
 
-// Şifreleme
 const encrypt = (text) => {
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
   let encrypted = cipher.update(text, 'utf8', 'hex');
@@ -12,7 +11,6 @@ const encrypt = (text) => {
   return encrypted;
 };
 
-// Şifre Çözme
 const decrypt = (encryptedText) => {
   const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
   let decrypted = decipher.update(encryptedText, 'hex', 'utf8');

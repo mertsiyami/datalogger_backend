@@ -1,5 +1,4 @@
-const User      = require('../models/userModel')
-const Device    = require('../models/deviceModel')
+const {User, Device} = require('../models');
 const {encrypt} = require('../cryptoHelper')
 const jwt       = require("jsonwebtoken");
 
@@ -10,8 +9,12 @@ const createUser = async (req, res) => {
 
     const { username, password, phoneNumber, email, devices, maxTemperature, minTemperature, maxHumidity, minHumidity} = req.body
 
-    if(!username || !password || !phoneNumber || !email || !devices || typeof maxTemperature === "undefined" || typeof minTemperature === "undefined" || typeof maxHumidity === "undefined" || typeof minHumidity === "undefined") 
-      return res.status(500).json({message:"Fill all fields!"})
+    //if bloklarında mümkün olduğu kadar süslü parantez kullanırsan iyi olur daha iyi okunabilirlik açısından
+    if(!username || !password || !phoneNumber || !email || !devices || maxTemperature == null || minTemperature == null || maxHumidity == null || minHumidity == null) 
+    {
+      return res.status(400).json({message:"Fill all fields!"})
+    }
+      
 
     const encryptedPassword =  encrypt(password)
 
@@ -40,16 +43,12 @@ const createUser = async (req, res) => {
 
 const addDeviceToUser = async (req, res) => {
   try {
-    const userId = req.user._id
+    // zaten req.user içerisinde user bilgilerimiz var. Bir daha gidip dbden okumaya veya ekstra userId validasyonuna ihtiyacımız yok.
+    const user = req.user;
     const deviceSerialNumber = req.body.deviceSerialNumber
 
-    if (!userId || !deviceSerialNumber) {
+    if (!deviceSerialNumber) {
       return res.status(400).json({ message: "Fill all fields!" })
-    }
-
-    const user = await User.findById(userId)
-    if (!user) {
-      return res.status(404).json({ message: "User not found!" })
     }
 
     const device = await Device.findOne({ serialNumber: deviceSerialNumber })
@@ -61,13 +60,16 @@ const addDeviceToUser = async (req, res) => {
       return res.status(400).json({ message: "Device already assigned to this user!" })
     }
 
-    user.devices.push(device._id)
-    await user.save()
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { $addToSet: { devices: device._id } },
+      { new: true }
+    );
 
-    device.userId = userId
+    device.userId = user._id;
     await device.save()
 
-    res.status(200).json({ message: "Device added successfully", user, device })
+    res.status(200).json({ message: "Device added successfully", updatedUser, device })
 
   } catch (error) {
     console.error("Error adding device to user:", error.message)
@@ -106,6 +108,10 @@ const loginUser = async (req, res) => {
 
 const updateThresholds = async (req, res) => {
   try {
+    // TO - DO updateThresholds yerine updateDevice endpointi yazılsa daha şık olur. Label / caption tarzı bir field eklenerek kullanıcıya cihaz isimlendirmesi imkanı sunmuş oluruz
+
+    // Ayrıca bu fieldlar userdan bağımsızlaştırılıp device altına taşınmalı hatta 
+
     const { minTemperature, maxTemperature, minHumidity, maxHumidity } = req.body
 
     const updateFields = {}
