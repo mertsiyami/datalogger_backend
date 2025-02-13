@@ -1,5 +1,5 @@
 const {User, Device} = require('../models');
-const {encrypt} = require('../cryptoHelper')
+const {encrypt} = require('../helpers')
 const jwt       = require("jsonwebtoken");
 
 require("dotenv").config();
