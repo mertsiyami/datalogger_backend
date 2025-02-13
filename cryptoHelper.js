@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 require('dotenv').config();
 
-const encryptionKey = process.env.ENCRYPTION_KEY; // 32 karakter uzunluğunda olmalı
-const iv = process.env.IV; // 16 karakter uzunluğunda olmalı
+const encryptionKey = process.env.ENCRYPTION_KEY;   // 32 karakter uzunluğunda olmalı
+const iv            = process.env.IV;               // 16 karakter uzunluğunda olmalı
 
 // Şifreleme
 const encrypt = (text) => {

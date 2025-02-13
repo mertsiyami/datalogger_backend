@@ -1,7 +1,9 @@
 const User      = require('../models/userModel')
 const Device    = require('../models/deviceModel')
 const {encrypt} = require('../cryptoHelper')
+const jwt       = require("jsonwebtoken");
 
+require("dotenv").config();
 
 const createUser = async (req, res) => {
   try {
@@ -38,7 +40,8 @@ const createUser = async (req, res) => {
 
 const addDeviceToUser = async (req, res) => {
   try {
-    const { userId, deviceSerialNumber } = req.body
+    const userId = req.user._id
+    const deviceSerialNumber = req.body
 
     if (!userId || !deviceSerialNumber) {
       return res.status(400).json({ message: "Fill all fields!" })
@@ -72,4 +75,33 @@ const addDeviceToUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, addDeviceToUser };
+const loginUser = async (req, res) => {
+  try {
+    const { username, password } = req.body
+
+    if (!username || !password) 
+      return res.status(400).json({ message: "Fill all fields!" })
+
+    const user = await User.findOne({ username })
+
+    if (!user) 
+      return res.status(404).json({ message: "User not found!" })
+
+    if (!(user.password == encrypt(password) )) 
+      return res.status(401).json({ message: "Invalid credentials!" })
+
+    const token = jwt.sign(
+      { userId: user._id},
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    res.status(200).json({ message: "Login successful", token })
+
+  } catch (error) {
+    console.error("Login error:", error.message)
+    res.status(500).json({ message: "Server error" })
+  }
+};
+
+module.exports = { createUser, addDeviceToUser, loginUser }
