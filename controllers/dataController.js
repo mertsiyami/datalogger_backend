@@ -44,7 +44,7 @@ const logData = async (req, res) => {
     const user  = await User.findOne({_id : device.userId})
     const {maxTemperature, minTemperature, maxHumidity, minHumidity} = user;
 
-    if(maxTemperature <= temperature || minTemperature > temperature || maxHumidity <= temperature || minHumidity > temperature)
+    if(maxTemperature <= temperature || minTemperature > temperature || maxHumidity <= humidity || minHumidity > humidity)
       console.log(`Temperature or Humidity is out of range! Temperature:${temperature}, Humidity: ${humidity}`); 
       // sendWarningSMS(temperature,humidity)
 
