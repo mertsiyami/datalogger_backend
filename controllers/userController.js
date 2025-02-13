@@ -6,9 +6,9 @@ const {encrypt} = require('../cryptoHelper')
 const createUser = async (req, res) => {
   try {
 
-    const { username, password, phoneNumber, email, devices} = req.body
+    const { username, password, phoneNumber, email, devices, maxTemperature, minTemperature, maxHumidity, minHumidity} = req.body
 
-    if(!username || !password || !phoneNumber || !email || !devices) 
+    if(!username || !password || !phoneNumber || !email || !devices || typeof maxTemperature === "undefined" || typeof minTemperature === "undefined" || typeof maxHumidity === "undefined" || typeof minHumidity === "undefined") 
       return res.status(500).json({message:"Fill all fields!"})
 
     const encryptedPassword =  encrypt(password)
@@ -18,10 +18,14 @@ const createUser = async (req, res) => {
       password: encryptedPassword,
       phoneNumber,
       email,
-      devices
+      devices,
+      maxTemperature,
+      minTemperature,
+      maxHumidity,
+      minHumidity
     });
+    
     await newUser.save();
-
 
     res.status(201).json({ message: 'User created successfully', userId: newUser._id });
 
