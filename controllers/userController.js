@@ -106,34 +106,41 @@ const loginUser = async (req, res) => {
   }
 };
 
-const updateThresholds = async (req, res) => {
+const updateDevice = async (req, res) => {
   try {
     // TO - DO updateThresholds yerine updateDevice endpointi yazılsa daha şık olur. Label / caption tarzı bir field eklenerek kullanıcıya cihaz isimlendirmesi imkanı sunmuş oluruz
 
     // Ayrıca bu fieldlar userdan bağımsızlaştırılıp device altına taşınmalı hatta 
 
-    const { minTemperature, maxTemperature, minHumidity, maxHumidity } = req.body
-
+    const { minTemperature, maxTemperature, minHumidity, maxHumidity, name, deviceSerialNumber } = req.body
+    const user = req.user
     const updateFields = {}
-    
+
     if (minTemperature !== undefined) updateFields.minTemperature = minTemperature
     if (maxTemperature !== undefined) updateFields.maxTemperature = maxTemperature
     if (minHumidity    !== undefined) updateFields.minHumidity    = minHumidity
     if (maxHumidity    !== undefined) updateFields.maxHumidity    = maxHumidity
+    if (name !== undefined) updateFields.name = name
 
     if (Object.keys(updateFields).length === 0) {
       return res.status(400).json({ message: "No valid fields provided for update." })
     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, updateFields, { new: true })
-
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found." })
+    const updatedDevice = await Device.findOneAndUpdate(
+      { serialNumber: deviceSerialNumber, userId: user._id },
+      {
+        $set: updateFields
+      },
+      { new: true } 
+    );
+    
+    if (!updatedDevice) {
+      return res.status(404).json({message:"Device not found!"})
     }
 
     res.status(200).json({
       message: "Thresholds updated successfully",
-      updatedUser
+      updatedDevice
     })
 
   } catch (error) {
@@ -142,4 +149,4 @@ const updateThresholds = async (req, res) => {
   }
 };
 
-module.exports = { createUser, addDeviceToUser, loginUser, updateThresholds }
+module.exports = { createUser, addDeviceToUser, loginUser, updateDevice }

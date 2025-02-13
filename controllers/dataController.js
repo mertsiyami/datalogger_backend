@@ -52,10 +52,9 @@ const logData = async (req, res) => {
 
     // control max-min limits and send sms if needed
 
-
-    // PHONE NUMBER HARICI BU FIELDLAR DEVICE ALTINA TAŞINMALI
     const user  = await User.findOne({_id : device.userId})
-    const {maxTemperature, minTemperature, maxHumidity, minHumidity, phoneNumber} = user;
+    const { phoneNumber } = user
+    const { maxTemperature, minTemperature, maxHumidity, minHumidity } = device
 
     // this validation can be improvised
     if(maxTemperature <= temperature || minTemperature > temperature || maxHumidity <= humidity || minHumidity > humidity)
@@ -63,7 +62,6 @@ const logData = async (req, res) => {
       console.log(`Temperature or Humidity is out of range! Temperature:${temperature}, Humidity: ${humidity}`);  // this line could be remove
       sendWarningSMS(temperature, humidity, phoneNumber)
     }
-
     res.status(201).json({ message: 'Data created successfully', newData })
   } catch (error) {
     console.error('Error creating Data:', error.message)
