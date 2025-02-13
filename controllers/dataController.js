@@ -2,7 +2,8 @@ const Data   = require('../models/dataModel')
 const Device = require('../models/deviceModel')
 const User   = require('../models/userModel')
 
-const {decrypt} = require('../cryptoHelper')
+const {decrypt}        = require('../cryptoHelper')
+const {sendWarningSMS} = require('../smsHelper')
 
 const logData = async (req, res) => {
   try {
@@ -42,11 +43,11 @@ const logData = async (req, res) => {
     // control max-min limits and send sms if needed
 
     const user  = await User.findOne({_id : device.userId})
-    const {maxTemperature, minTemperature, maxHumidity, minHumidity} = user;
+    const {maxTemperature, minTemperature, maxHumidity, minHumidity, phoneNumber} = user;
 
     if(maxTemperature <= temperature || minTemperature > temperature || maxHumidity <= humidity || minHumidity > humidity)
       console.log(`Temperature or Humidity is out of range! Temperature:${temperature}, Humidity: ${humidity}`); 
-      // sendWarningSMS(temperature,humidity)
+      sendWarningSMS(temperature, humidity, phoneNumber)
 
     res.status(201).json({ message: 'Data created successfully', newData })
   } catch (error) {
