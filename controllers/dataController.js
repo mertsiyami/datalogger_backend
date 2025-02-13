@@ -59,6 +59,7 @@ const logData = async (req, res) => {
     if(!checkTemperature(temperature, maxTemperature, minTemperature) || !checkHumidity(humidity, maxHumidity, minHumidity))
     {
       console.log("Log values out of threshold range!")
+      console.log(temperature, humidity, phoneNumber)
       sendWarningSMS(temperature, humidity, phoneNumber)
     }
 
