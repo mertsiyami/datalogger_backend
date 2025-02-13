@@ -24,6 +24,18 @@ const userSchema = new mongoose.Schema({
   devices: {
     type: [String], // Cihaz ID'lerini içeren dizi
     default: [],
+  },
+  maxTemperature: {
+    type: Number
+  },
+  minTemperature: {
+    type: Number
+  },
+  maxHumidity: {
+    type: Number
+  },
+  minHumidity: {
+    type: Number
   }
 });
 

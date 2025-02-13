@@ -9,8 +9,10 @@ const deviceSchema = new mongoose.Schema({
   },
   deviceId: {
     type: String
+  },
+  userId: {
+    type: String
   }
-  
 });
 
 const Device = mongoose.model('Device', deviceSchema);
