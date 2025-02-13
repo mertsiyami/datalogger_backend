@@ -1,5 +1,5 @@
 const {Data, Device, User} = require('../models');
-const {decrypt, sendWarningSMS} = require('../helpers')
+const {decrypt, sendWarningSMS, checkTemperature, checkHumidity} = require('../helpers')
 
 const logData = async (req, res) => {
   try {
@@ -56,12 +56,12 @@ const logData = async (req, res) => {
     const { phoneNumber } = user
     const { maxTemperature, minTemperature, maxHumidity, minHumidity } = device
 
-    // this validation can be improvised
-    if(maxTemperature <= temperature || minTemperature > temperature || maxHumidity <= humidity || minHumidity > humidity)
+    if(!checkTemperature(temperature, maxTemperature, minTemperature) || !checkHumidity(humidity, maxHumidity, minHumidity))
     {
-      console.log(`Temperature or Humidity is out of range! Temperature:${temperature}, Humidity: ${humidity}`);  // this line could be remove
+      console.log("Log values out of threshold range!")
       sendWarningSMS(temperature, humidity, phoneNumber)
     }
+
     res.status(201).json({ message: 'Data created successfully', newData })
   } catch (error) {
     console.error('Error creating Data:', error.message)

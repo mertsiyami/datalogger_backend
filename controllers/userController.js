@@ -7,15 +7,13 @@ require("dotenv").config();
 const createUser = async (req, res) => {
   try {
 
-    const { username, password, phoneNumber, email, devices, maxTemperature, minTemperature, maxHumidity, minHumidity} = req.body
+    const { username, password, phoneNumber, email, devices } = req.body
 
-    //if bloklarında mümkün olduğu kadar süslü parantez kullanırsan iyi olur daha iyi okunabilirlik açısından
-    if(!username || !password || !phoneNumber || !email || !devices || maxTemperature == null || minTemperature == null || maxHumidity == null || minHumidity == null) 
+    if(!username || !password || !phoneNumber || !email || !devices) 
     {
       return res.status(400).json({message:"Fill all fields!"})
     }
       
-
     const encryptedPassword =  encrypt(password)
 
     const newUser = new User({
@@ -23,11 +21,7 @@ const createUser = async (req, res) => {
       password: encryptedPassword,
       phoneNumber,
       email,
-      devices,
-      maxTemperature,
-      minTemperature,
-      maxHumidity,
-      minHumidity
+      devices
     });
     
     await newUser.save();
@@ -43,7 +37,7 @@ const createUser = async (req, res) => {
 
 const addDeviceToUser = async (req, res) => {
   try {
-    // zaten req.user içerisinde user bilgilerimiz var. Bir daha gidip dbden okumaya veya ekstra userId validasyonuna ihtiyacımız yok.
+
     const user = req.user;
     const deviceSerialNumber = req.body.deviceSerialNumber
 

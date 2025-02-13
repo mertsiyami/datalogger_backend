@@ -6,11 +6,14 @@ const { v4: uuidv4 } = require('uuid');
 const createDevice = async (req, res) => {
   try {
     const serialNumber = uuidv4()
-    const datalogs = []
     
     const newDevice = new Device({
         serialNumber,
-        datalogs
+        name : "New Device",
+        maxTemperature : null,
+        minTemperature : null,
+        maxHumidity : null,
+        minHumidity : null
     });
 
     await newDevice.save();
