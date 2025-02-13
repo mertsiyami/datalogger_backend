@@ -4,8 +4,8 @@ const { createUser, addDeviceToUser, loginUser, updateThresholds } = require('..
 
 const router = express.Router()
 
+router.put('/updateThresholds', verifyToken, updateThresholds)
 router.post('/addDevice'  , verifyToken, addDeviceToUser)
-router.put('/changeThresholds', verifyToken, updateThresholds)
 router.post('/login'      , loginUser)
 router.post('/', createUser)
 
