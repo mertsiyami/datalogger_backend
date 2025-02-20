@@ -144,4 +144,4 @@ const updateDevice = async (req, res) => {
 };
 
 
-module.exports = { createUser, addDeviceToUser, loginUser, updateDevice, myDevices }
+module.exports = { createUser, addDeviceToUser, loginUser, updateDevice }
