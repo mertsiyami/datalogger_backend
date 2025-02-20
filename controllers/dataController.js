@@ -74,7 +74,7 @@ const logsByDeviceId = async (req, res) => {
 
   try{
 
-    const deviceId = req.body.device._id;
+    const deviceId = req.body.deviceId
 
     const logs = await Data.find({_id:deviceId})
 
