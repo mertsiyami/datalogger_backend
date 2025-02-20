@@ -33,12 +33,7 @@ app.use((req, res, next) => {
 // Middlewares
 app.use(bodyParser.json())
 
-const corsOrigin ={
-  origin: process.env.FRONTEND_URL, //or whatever port your frontend is using
-  credentials:true,            
-  optionSuccessStatus:200
-}
-app.use(cors(corsOrigin));
+app.use(cors({ origin: "*", credentials: true }));
 
 
 // Routes
