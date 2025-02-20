@@ -70,13 +70,13 @@ const logData = async (req, res) => {
   }
 };
 
-const logsByUserId = async (req, res) => {
+const logsByDeviceId = async (req, res) => {
 
   try{
 
-    const user = req.user;
+    const deviceId = req.body.device._id;
 
-    const logs = await Data.find({userId : user._id})
+    const logs = await Data.find({_id:deviceId})
 
     if(!logs)
     {
@@ -88,11 +88,11 @@ const logsByUserId = async (req, res) => {
 
   }catch (error)
   {
-    console.log("======================== LogsByUserId ERROR --------------------------------")
+    console.log("======================== LogsByDeviceId ERROR --------------------------------")
     throw error;
   }
 
 }
 
 
-module.exports = { logData, logsByUserId };
+module.exports = { logData, logsByDeviceId };
