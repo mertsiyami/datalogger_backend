@@ -100,48 +100,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-const updateDevice = async (req, res) => {
-  try {
-    // TO - DO updateThresholds yerine updateDevice endpointi yazılsa daha şık olur. Label / caption tarzı bir field eklenerek kullanıcıya cihaz isimlendirmesi imkanı sunmuş oluruz
-
-    // Ayrıca bu fieldlar userdan bağımsızlaştırılıp device altına taşınmalı hatta 
-
-    const { minTemperature, maxTemperature, minHumidity, maxHumidity, name, deviceSerialNumber } = req.body
-    const user = req.user
-    const updateFields = {}
-
-    if (minTemperature !== undefined) updateFields.minTemperature = minTemperature
-    if (maxTemperature !== undefined) updateFields.maxTemperature = maxTemperature
-    if (minHumidity    !== undefined) updateFields.minHumidity    = minHumidity
-    if (maxHumidity    !== undefined) updateFields.maxHumidity    = maxHumidity
-    if (name !== undefined) updateFields.name = name
-
-    if (Object.keys(updateFields).length === 0) {
-      return res.status(400).json({ message: "No valid fields provided for update." })
-    }
-
-    const updatedDevice = await Device.findOneAndUpdate(
-      { serialNumber: deviceSerialNumber, userId: user._id },
-      {
-        $set: updateFields
-      },
-      { new: true } 
-    );
-    
-    if (!updatedDevice) {
-      return res.status(404).json({message:"Device not found!"})
-    }
-
-    res.status(200).json({
-      message: "Thresholds updated successfully",
-      updatedDevice
-    })
-
-  } catch (error) {
-    console.error("Error updating thresholds:", error.message)
-    res.status(500).json({ message: "Server error" })
-  }
-};
 
 
-module.exports = { createUser, addDeviceToUser, loginUser, updateDevice }
+
+module.exports = { createUser, addDeviceToUser, loginUser }
