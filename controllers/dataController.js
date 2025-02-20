@@ -1,5 +1,5 @@
 const {Data, Device, User} = require('../models');
-const {decrypt, sendWarningSMS, checkTemperature, checkHumidity} = require('../helpers')
+const {decrypt, sendWarningSMS, checkTemperature, checkHumidity, sendVoiceMessage} = require('../helpers')
 
 const logData = async (req, res) => {
   try {
@@ -61,6 +61,7 @@ const logData = async (req, res) => {
       console.log("Log values out of threshold range!")
       console.log(temperature, humidity, phoneNumber)
       sendWarningSMS(temperature, humidity, phoneNumber)
+      sendVoiceMessage(temperature,humidity, phoneNumber)
     }
 
     res.status(201).json({ message: 'Data created successfully', newData })
