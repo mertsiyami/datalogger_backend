@@ -56,4 +56,6 @@ const createDeviceSecretkey = async (req, res) => {
 
 
 
+
+
 module.exports = { createDevice, createDeviceSecretkey };

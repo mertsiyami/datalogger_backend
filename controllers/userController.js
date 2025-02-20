@@ -143,4 +143,19 @@ const updateDevice = async (req, res) => {
   }
 };
 
-module.exports = { createUser, addDeviceToUser, loginUser, updateDevice }
+const myDevices = async (req, res) => {
+
+  try {
+
+    const devices = req.user.devices;
+
+    res.status(200).json({devices})
+
+  } catch (error) {
+    console.error("Server error:", error.message)
+    res.status(500).json({ message: "Server error" })
+  }
+
+}
+
+module.exports = { createUser, addDeviceToUser, loginUser, updateDevice, myDevices }
