@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
 // Middlewares
 app.use(bodyParser.json())
-app.use(cors({ origin: "https://datalogger-frontend-74fcd5ae475e.herokuapp.com", credentials: true }))
+app.use(cors())
 
 // Routes
 app.use('/user'  , userRoutes)
