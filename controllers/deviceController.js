@@ -60,7 +60,7 @@ const getDevices = async (req, res) => {
 
     const user = req.user
 
-    const devices = await Device.find({userID : user._id})
+    const devices = await Device.find({userId : user._id})
 
     if(!devices)
       res.json(null);
