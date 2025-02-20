@@ -54,8 +54,31 @@ const createDeviceSecretkey = async (req, res) => {
 };
 
 
+const getDevices = async (req, res) => {
+
+  try{
+
+    const user = req.user
+
+    const devices = await Device.find({userID : user._id})
+
+    if(!devices)
+      res.json(null);
+
+    res.status(200).json({devices})
+
+
+  }catch (error)
+  {
+    console.error("--------------------- getDevices ERROR ------------------------",error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+
+}
 
 
 
 
-module.exports = { createDevice, createDeviceSecretkey };
+
+
+module.exports = { createDevice, createDeviceSecretkey, getDevices };
