@@ -18,7 +18,6 @@ connectDB()
 // Express
 const app = express()
 
-/*
 
 // HTTPS yönlendirmesini kaldır
 app.disable('trust proxy');
@@ -30,8 +29,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-*/
 
 // Middlewares
 app.use(bodyParser.json())
