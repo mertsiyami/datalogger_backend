@@ -70,5 +70,29 @@ const logData = async (req, res) => {
   }
 };
 
+const logsByUserId = async (req, res) => {
 
-module.exports = { logData };
+  try{
+
+    const user = req.user;
+
+    const logs = await Data.find({userId : user._id})
+
+    if(!logs)
+    {
+      res.json(null);
+    }
+
+    res.json(logs)
+
+
+  }catch (error)
+  {
+    console.log("======================== LogsByUserId ERROR --------------------------------")
+    throw error;
+  }
+
+}
+
+
+module.exports = { logData, logsByUserId };
