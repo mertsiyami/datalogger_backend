@@ -22,12 +22,6 @@ app.use(cors({ origin: "*", credentials: true }));
 
 app.disable('trust proxy');
 
-app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] === 'https') {
-    return res.redirect(307, `http://${req.headers.host}${req.url}`);
-  }
-  next();
-});
 
 
 // Middlewares
