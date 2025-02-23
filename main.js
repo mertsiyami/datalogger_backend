@@ -22,12 +22,15 @@ app.use(cors({ origin: "*", credentials: true }));
 
 app.disable('trust proxy');
 
-
+app.use((req, res, next) => {
+  if (req.headers['x-embedded']) {
+    return res.redirect(307, `https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
 
 // Middlewares
 app.use(bodyParser.json())
-
-
 
 // Routes
 app.use('/user'  , userRoutes)
