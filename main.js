@@ -18,6 +18,7 @@ connectDB()
 // Express
 const app = express()
 
+app.use(cors({ origin: "*", credentials: true }));
 
 app.disable('trust proxy');
 
@@ -32,7 +33,6 @@ app.use((req, res, next) => {
 // Middlewares
 app.use(bodyParser.json())
 
-app.use(cors({ origin: "*", credentials: true }));
 
 
 // Routes
