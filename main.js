@@ -19,11 +19,11 @@ connectDB()
 const app = express()
 
 
-app.enable('trust proxy');
+app.disable('trust proxy');
 
 app.use((req, res, next) => {
-  if (req.headers["x-forwarded-proto"] !== "https") {
-    return res.redirect(`https://${req.headers.host}${req.url}`);
+  if (req.headers['x-forwarded-proto'] === 'https') {
+    return res.redirect(307, `http://${req.headers.host}${req.url}`);
   }
   next();
 });
