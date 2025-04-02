@@ -1,5 +1,5 @@
 const {User, Device} = require('../models');
-const {encrypt} = require('../helpers')
+const {encrypt, decrypt} = require('../helpers')
 const jwt       = require("jsonwebtoken");
 
 require("dotenv").config();
@@ -38,12 +38,15 @@ const createUser = async (req, res) => {
 const addDeviceToUser = async (req, res) => {
   try {
 
-    const user = req.user;
-    const deviceSerialNumber = req.body.deviceSerialNumber
+    const user = req.user
 
-    if (!deviceSerialNumber) {
+    const deviceSecretKey = decrypt(req.body.secretKey)
+
+    if (!deviceSecretKey) {
       return res.status(400).json({ message: "Fill all fields!" })
     }
+
+    const [deviceId, deviceSerialNumber] = deviceSecretKey.split("|");
 
     const device = await Device.findOne({ serialNumber: deviceSerialNumber })
     if (!device) {
