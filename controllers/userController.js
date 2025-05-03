@@ -37,43 +37,53 @@ const createUser = async (req, res) => {
 
 const addDeviceToUser = async (req, res) => {
   try {
+    const user = req.user;
+    // deviceSerialNumber parametresini doğrudan alıyoruz
+    const { deviceSerialNumber } = req.body;
 
-    const user = req.user
-
-    const deviceSecretKey = decrypt(req.body.secretKey)
-
-    if (!deviceSecretKey) {
-      return res.status(400).json({ message: "Fill all fields!" })
+    if (!deviceSerialNumber) {
+      return res.status(400).json({ message: "Cihaz seri numarası gereklidir!" });
     }
 
-    const [deviceId, deviceSerialNumber] = deviceSecretKey.split("|");
+    // Cihazı seri numarasına göre bul
+    const device = await Device.findOne({ serialNumber: deviceSerialNumber });
 
-    const device = await Device.findOne({ serialNumber: deviceSerialNumber })
     if (!device) {
-      return res.status(404).json({ message: "Device not found!" })
+      return res.status(404).json({ message: "Cihaz bulunamadı!" });
     }
 
+    // Cihaz zaten bu kullanıcıya atanmış mı kontrol et
     if (user.devices.includes(device._id)) {
-      return res.status(400).json({ message: "Device already assigned to this user!" })
+      return res.status(400).json({ message: "Bu cihaz zaten kullanıcınıza atanmış!" });
     }
 
+    // Cihaz başka bir kullanıcıya atanmış mı kontrol et
+    if (device.userId && String(device.userId) !== String(user._id)) {
+      return res.status(400).json({ message: "Bu cihaz başka bir kullanıcıya atanmış!" });
+    }
+
+    // Kullanıcının cihaz listesine yeni cihazı ekle
     const updatedUser = await User.findByIdAndUpdate(
       user._id,
       { $addToSet: { devices: device._id } },
       { new: true }
     );
 
+    // Cihaza kullanıcı ID'sini ekle
     device.userId = user._id;
-    await device.save()
+    await device.save();
 
-    res.status(200).json({ message: "Device added successfully", updatedUser, device })
-
+    res.status(200).json({ 
+      success: true,
+      message: "Cihaz başarıyla eklendi", 
+      updatedUser, 
+      device 
+    });
   } catch (error) {
-    console.error("Error adding device to user:", error.message)
-    res.status(500).json({ message: "Server error" })
+    console.error("Kullanıcıya cihaz eklerken hata:", error.message);
+    res.status(500).json({ success: false, message: "Sunucu hatası" });
   }
 };
-
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body
@@ -103,7 +113,64 @@ const loginUser = async (req, res) => {
   }
 };
 
+const getUserInfo = async (req, res) => {
+
+  res.json(req.user);
+
+}
+
+const updateUser = async (req, res) => {
+  try {
+    const user = req.user;
+    const { username, phoneNumber, email } = req.body;
+    
+    // Güncelleme için en az bir alan gönderilmiş mi kontrolü
+    if (!username && !phoneNumber && !email) {
+      return res.status(400).json({ message: "En az bir alanı güncellemelisiniz!" });
+    }
+
+    // Güncellenecek alanları içeren obje
+    const updateFields = {};
+    
+    if (username) updateFields.username = username;
+    if (phoneNumber) updateFields.phoneNumber = phoneNumber;
+    if (email) updateFields.email = email;
+
+    // Eğer username güncellenmek isteniyorsa, bu kullanıcı adının zaten alınıp alınmadığını kontrol et
+    if (username) {
+      const existingUser = await User.findOne({ username, _id: { $ne: user._id } });
+      if (existingUser) {
+        return res.status(400).json({ message: "Bu kullanıcı adı zaten kullanımda!" });
+      }
+    }
+
+    // Eğer email güncellenmek isteniyorsa, bu emailin zaten alınıp alınmadığını kontrol et
+    if (email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: user._id } });
+      if (existingUser) {
+        return res.status(400).json({ message: "Bu e-posta adresi zaten kullanımda!" });
+      }
+    }
+
+    // Kullanıcıyı güncelle
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { $set: updateFields },
+      { new: true }
+    ).select('-password'); // Şifreyi response'a dahil etme
+
+    res.status(200).json({ 
+      success: true,
+      message: "Kullanıcı bilgileri başarıyla güncellendi", 
+      user: updatedUser 
+    });
+  } catch (error) {
+    console.error("Error updating user:", error.message);
+    res.status(500).json({ success: false, message: "Sunucu hatası" });
+  }
+};
 
 
 
-module.exports = { createUser, addDeviceToUser, loginUser }
+
+module.exports = { createUser, addDeviceToUser, loginUser, getUserInfo, updateUser }

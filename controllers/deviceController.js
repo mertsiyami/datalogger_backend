@@ -27,7 +27,6 @@ const createDevice = async (req, res) => {
   }
 };
 
-
 // TO-DO bu endpointi bir helper gibi değerlendirip createDevice altında kullanıcıya sercretKey dönsek daha iyi olur.
 const createDeviceSecretkey = async (req, res) => {
   try {
@@ -52,7 +51,6 @@ const createDeviceSecretkey = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 const getDevices = async (req, res) => {
 
@@ -79,6 +77,7 @@ const getDevices = async (req, res) => {
 const updateDevice = async (req, res) => {
   try {
 
+
     const { minTemperature, maxTemperature, minHumidity, maxHumidity, name, deviceSerialNumber } = req.body
     const user = req.user
     const updateFields = {}
@@ -88,6 +87,8 @@ const updateDevice = async (req, res) => {
     if (minHumidity    !== undefined) updateFields.minHumidity    = minHumidity
     if (maxHumidity    !== undefined) updateFields.maxHumidity    = maxHumidity
     if (name !== undefined) updateFields.name = name
+
+
 
     if (Object.keys(updateFields).length === 0) {
       return res.status(400).json({ message: "No valid fields provided for update." })
@@ -104,11 +105,13 @@ const updateDevice = async (req, res) => {
     if (!updatedDevice) {
       return res.status(404).json({message:"Device not found!"})
     }
-
+    
     res.status(200).json({
+      success:true,
       message: "Thresholds updated successfully",
       updatedDevice
     })
+
 
   } catch (error) {
     console.error("Error updating thresholds:", error.message)
