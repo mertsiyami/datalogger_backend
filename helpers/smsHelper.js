@@ -38,9 +38,9 @@ const sendWarningSMS = (temperature, humidity, phoneNumber) => {
 
 };
 
-const sendVoiceMessage = (temperature, humidity, phoneNumber) => {
+const sendVoiceMessage = (temperature, humidity, phoneNumber, username, deviceName) => {
 
-  const message = `Sıcaklık ${temperature} derece, nem yüzde ${humidity} `
+  const message = `${username}, ${deviceName} cihazınızın ölçtüğü değerler, Sıcaklık ${temperature} derece, nem yüzde ${humidity} `
 
   axios.post(process.env.NETGSM_VOICE_URL,
     {

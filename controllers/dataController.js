@@ -53,15 +53,15 @@ const logData = async (req, res) => {
     // control max-min limits and send sms if needed
 
     const user  = await User.findOne({_id : device.userId})
-    const { phoneNumber } = user
-    const { maxTemperature, minTemperature, maxHumidity, minHumidity } = device
+    const { phoneNumber, username } = user
+    const { maxTemperature, minTemperature, maxHumidity, minHumidity, name } = device
 
     if(!checkTemperature(temperature, maxTemperature, minTemperature) || !checkHumidity(humidity, maxHumidity, minHumidity))
     {
       console.log("Log values out of threshold range!")
       console.log(temperature, humidity, phoneNumber)
       sendWarningSMS(temperature, humidity, phoneNumber)
-      sendVoiceMessage(temperature,humidity, phoneNumber)
+      sendVoiceMessage(temperature,humidity, phoneNumber, username, name)
     }
 
     res.status(201).json({ message: 'Data created successfully', newData })
